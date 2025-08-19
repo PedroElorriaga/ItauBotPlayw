@@ -1,8 +1,5 @@
 from playwright.async_api import async_playwright
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
+from src.utils.common_utils import read_json_file
 
 
 class PlaywrightsConfigs:
@@ -22,5 +19,7 @@ class PlaywrightsConfigs:
 
 
 class ItauConfigs:
-    OPERADOR_ITAU = os.getenv('OPERADOR_ITAU')
-    PASSWORD_ITAU = os.getenv('PASSWORD_ITAU')
+    OPERATOR_ITAU = read_json_file('data')['settings']['itau']['operator']
+    PASSWORD_ITAU = read_json_file('data')['settings']['itau']['password']
+    COMPANIES_TO_EXECUTE = read_json_file(
+        'data')['input_data']['companies_to_execute']

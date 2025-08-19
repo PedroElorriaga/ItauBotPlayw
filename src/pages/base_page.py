@@ -2,7 +2,7 @@ from playwright.async_api import BrowserContext
 
 
 class BasePage:
-    def __init__(self, page: BrowserContext, base_url: str):
+    def __init__(self, page: BrowserContext, base_url: str = None):
         self.page = page
         self.base_url = base_url
 
