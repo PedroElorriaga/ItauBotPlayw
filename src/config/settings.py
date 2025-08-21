@@ -23,3 +23,5 @@ class ItauConfigs:
     PASSWORD_ITAU = read_json_file('data')['settings']['itau']['password']
     COMPANIES_TO_EXECUTE = read_json_file(
         'data')['input_data']['companies_to_execute']
+    DATE_BEGIN = read_json_file('data')['input_data']['date_begin']
+    DATE_END = read_json_file('data')['input_data']['date_end']
