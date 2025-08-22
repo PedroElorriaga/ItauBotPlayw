@@ -1,5 +1,6 @@
 from src.pages.base_page import BasePage
 from typing import List
+from src.utils.common_utils import SystemMessages
 
 
 class CompaniesPage(BasePage):
@@ -66,4 +67,32 @@ class CompaniesPage(BasePage):
         else:
             accounts.insert(0, default_account)
 
+        await change_account_shadow_root.get_by_role("button", name="fechar").click()
+
         return accounts
+
+    async def change_account(self, account: dict):
+        await self.page.get_by_role("button", name="Trocar de conta").click()
+        change_account_shadow_root = self.page.locator('mf-lista-contas')
+        accounts_from_tr = await change_account_shadow_root.locator('ul#list-accounts-container li').all()
+
+        for tr in accounts_from_tr:
+            account_span = await tr.locator('button.switch-account span').all()
+
+            name = await account_span[0].inner_text()
+            cnpj = await account_span[3].inner_text()
+
+            if name == account['name'] and cnpj == account['cnpj']:
+                await account_span[0].click()
+                await self.page.wait_for_selector('dialog.ids-alert--success')
+                SystemMessages().log(
+                    f'Conta trocada para {name} - {cnpj}')
+                return
+
+    async def goto_download_company_page(self):
+        await self.page.get_by_role("menuitem", name="Contas a pagar botão", exact=True).click()
+        await self.page.wait_for_timeout(1000)
+        await self.page.get_by_role("menuitem", name="Ir para Contas a pagar botão").click()
+        await self.page.wait_for_timeout(5000)
+        iframe = self.page.locator('iframe.iframe-nf2')
+        await iframe.content_frame.get_by_role("link", name="Consultar pagamentos,").click()
