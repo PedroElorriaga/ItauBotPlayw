@@ -12,9 +12,9 @@ class CompaniesPage(BasePage):
         await self.page.get_by_role("radio", name="Múltiplas contas").click()
 
         change_account_shadow_root = self.page.locator('mf-lista-contas')
-        first_account_from_table = change_account_shadow_root.locator(
+        first_account_from_tr = change_account_shadow_root.locator(
             'ul.ids-list li')
-        first_account_spans = await first_account_from_table.locator('span').all()
+        first_account_spans = await first_account_from_tr.locator('span').all()
         default_account = {
             'index': 0,
             'name': await first_account_spans[0].inner_text(),
