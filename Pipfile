@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-playwright = "*"
 dotenv = "*"
-duckdb = "*"
 colorama = "*"
+duckdb = "==0.10.2"
+playwright = "==1.54.0"
 
 [dev-packages]
 
