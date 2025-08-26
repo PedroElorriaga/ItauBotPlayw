@@ -1,0 +1,30 @@
+{
+    "input_data": {
+        "companies_to_execute": [],
+        "date_begin": "2025-01-01",
+        "date_end": "2025-01-15",
+        "headless": "off"
+    },
+    "settings": {
+        "itau": {
+            "operator": "operator-code",
+            "password": "password"
+        },
+        "netsuite": {
+            "security1": {
+                "question": "Qual era o seu apelido na infância?",
+                "answer": "answer"
+            },
+            "security2": {
+                "question": "Em que cidade você conheceu seu cônjuge/parceiro?",
+                "answer": "answer"
+            },
+            "security3": {
+                "question": "Qual é o nome de solteira de sua avó materna?",
+                "answer": "answer"
+            },
+            "user": "user-mail",
+            "password": "password"
+        }
+    }
+}
