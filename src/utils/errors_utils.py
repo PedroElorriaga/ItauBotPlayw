@@ -13,3 +13,9 @@ class InvalidTableDuckDb(Exception):
     from duckdb import CatalogException
     """For problem to find table name"""
     pass
+
+
+class LocatorTimeoutPlaywright(Exception):
+    from playwright.sync_api import TimeoutError
+    """For timeout errors"""
+    pass
