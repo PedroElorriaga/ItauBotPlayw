@@ -1,5 +1,6 @@
 from src.pages.login_page import LoginPage
 from src.pages.companies_page import CompaniesPage
+from src.pages.download_page import DownloadPage
 from src.config.settings import PlaywrightsConfigs, ItauConfigs
 from src.utils.common_utils import tuple_list_to_str_list, SystemMessages
 from src.models.duckdb.connection import DuckConnection
@@ -45,8 +46,13 @@ async def do_itau_tasks():
                     f'Conta trocada para {account["name"]} - {account["cnpj"]}')
             else:
                 await companies_itau.change_account(account)
+            # duckdb_connection.update_company_status(account['index'], 'done')
 
             await companies_itau.goto_download_company_page()
+            download_itau = DownloadPage(
+                page, date_begin=ItauConfigs.DATE_BEGIN, date_end=ItauConfigs.DATE_END)
+            await download_itau.search_payments()
+
 
 if __name__ == '__main__':
     asyncio.run(do_itau_tasks())
