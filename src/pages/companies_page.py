@@ -12,8 +12,8 @@ class CompaniesPage(BasePage):
         await self.page.get_by_role("button", name="Trocar de conta").click()
         await self.page.get_by_role("radio", name="Múltiplas contas").click()
 
-        change_account_shadow_root = self.page.locator('mf-lista-contas')
-        first_account_from_tr = change_account_shadow_root.locator(
+        self.iframe_page = self.page.locator('mf-lista-contas')
+        first_account_from_tr = self.iframe_page.locator(
             'ul.ids-list li')
         first_account_spans = await first_account_from_tr.locator('span').all()
         default_account = {
@@ -25,7 +25,7 @@ class CompaniesPage(BasePage):
         }
 
         await self.page.get_by_role("radio", name="Conta", exact=True).click()
-        accounts_from_tr = await change_account_shadow_root.locator('ul#list-accounts-container li').all()
+        accounts_from_tr = await self.iframe_page.locator('ul#list-accounts-container li').all()
         accounts = []
         index = 1
 
@@ -67,14 +67,13 @@ class CompaniesPage(BasePage):
         else:
             accounts.insert(0, default_account)
 
-        await change_account_shadow_root.get_by_role("button", name="fechar").click()
+        await self.iframe_page.get_by_role("button", name="fechar").click()
 
         return accounts
 
     async def change_account(self, account: dict):
         await self.page.get_by_role("button", name="Trocar de conta").click()
-        change_account_shadow_root = self.page.locator('mf-lista-contas')
-        accounts_from_tr = await change_account_shadow_root.locator('ul#list-accounts-container li').all()
+        accounts_from_tr = await self.iframe_page.locator('ul#list-accounts-container li').all()
 
         for tr in accounts_from_tr:
             account_span = await tr.locator('button.switch-account span').all()
@@ -94,5 +93,5 @@ class CompaniesPage(BasePage):
         await self.page.wait_for_timeout(1000)
         await self.page.get_by_role("menuitem", name="Ir para Contas a pagar botão").click()
         await self.page.wait_for_timeout(5000)
-        iframe = self.page.locator('iframe.iframe-nf2')
-        await iframe.content_frame.get_by_role("link", name="Consultar pagamentos,").click()
+        self.iframe_page = self.page.locator('iframe.iframe-nf2')
+        await self.iframe_page.content_frame.get_by_role("link", name="Consultar pagamentos,").click()
