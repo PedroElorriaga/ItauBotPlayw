@@ -1,8 +1,8 @@
 {
     "input_data": {
         "companies_to_execute": [],
-        "date_begin": "2025-01-01",
-        "date_end": "2025-01-15",
+        "date_begin": "01-01-2025",
+        "date_end": "15-01-2025",
         "headless": "off"
     },
     "settings": {
