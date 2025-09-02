@@ -29,7 +29,6 @@ class DuckConnection:
                 SELECT name, cnpj FROM progress WHERE status = 'pending' ORDER BY idx
             """).fetchall()
         except InvalidTableDuckDb.CatalogException:
-            print('except')
             self.__create_progress_table()
             return self.search_companies_status_pending()
 
