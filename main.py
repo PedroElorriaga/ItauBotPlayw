@@ -46,12 +46,13 @@ async def do_itau_tasks():
                     f'Conta trocada para {account["name"]} - {account["cnpj"]}')
             else:
                 await companies_itau.change_account(account)
-            # duckdb_connection.update_company_status(account['index'], 'done')
 
             await companies_itau.goto_download_company_page()
             download_itau = DownloadPage(
                 page, date_begin=ItauConfigs.DATE_BEGIN, date_end=ItauConfigs.DATE_END)
             await download_itau.search_payments()
+            print(download_itau.payment_receipts)
+            duckdb_connection.update_company_status(account['index'], 'done')
 
 
 if __name__ == '__main__':
