@@ -29,7 +29,8 @@ async def do_itau_tasks():
         companies_to_execute = companies_from_progress_table if len(
             companies_from_progress_table) > 0 else ItauConfigs.COMPANIES_TO_EXECUTE
 
-        login_itau = LoginPage(page, 'https://www.itau.com.br/itaubba-pt')
+        login_itau = LoginPage(
+            page, ItauConfigs.OPERATOR_ITAU, 'https://www.itau.com.br/itaubba-pt',)
         await login_itau.goto_login()
 
         companies_itau = CompaniesPage(

@@ -3,6 +3,10 @@ from src.config.settings import ItauConfigs
 
 
 class LoginPage(BasePage):
+    def __init__(self, page, operator_password: str, base_url: str = None):
+        super().__init__(page, base_url)
+        self.__operator_password = operator_password
+
     async def goto_login(self):
         await self.open_url()
         await self.page.get_by_role("button", name="Mais acessos").click()
@@ -14,7 +18,7 @@ class LoginPage(BasePage):
         await self.page.keyboard.press("ArrowDown")
         await self.page.keyboard.press("Enter")
 
-        await self.page.get_by_role("dialog", name="Acesse sua conta").get_by_label("Código do operador").fill(ItauConfigs.OPERATOR_ITAU)
+        await self.page.get_by_role("dialog", name="Acesse sua conta").get_by_label("Código do operador").fill(self.__operator_password)
         await self.page.keyboard.press("Enter")
         await self.page.get_by_role("dialog", name="Acesse sua conta").get_by_label("Acessar").click()
         await self.__enter_virtual_keyboard_password()
