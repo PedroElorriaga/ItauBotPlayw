@@ -25,17 +25,17 @@ class CompaniesPage(BasePage):
         }
 
         await self.page.get_by_role("radio", name="Conta", exact=True).click()
-        accounts_from_tr = await self.iframe_page.locator('ul#list-accounts-container li').all()
+        accounts_from_trs = await self.iframe_page.locator('ul#list-accounts-container li').all()
         accounts = []
         index = 1
 
-        for account in accounts_from_tr:
-            account_span = await account.locator('button.switch-account span').all()
+        for account in accounts_from_trs:
+            account_spans = await account.locator('button.switch-account span').all()
 
-            name = await account_span[0].inner_text()
-            agency = await account_span[1].inner_text()
-            number = await account_span[2].inner_text()
-            cnpj = await account_span[3].inner_text()
+            name = await account_spans[0].inner_text()
+            agency = await account_spans[1].inner_text()
+            number = await account_spans[2].inner_text()
+            cnpj = await account_spans[3].inner_text()
 
             account_company = f'{name} - {cnpj}'
             is_account_company_included = account_company in self.companies_to_execute
@@ -73,16 +73,16 @@ class CompaniesPage(BasePage):
 
     async def change_account(self, account: dict):
         await self.page.get_by_role("button", name="Trocar de conta").click()
-        accounts_from_tr = await self.iframe_page.locator('ul#list-accounts-container li').all()
+        accounts_from_trs = await self.iframe_page.locator('ul#list-accounts-container li').all()
 
-        for tr in accounts_from_tr:
-            account_span = await tr.locator('button.switch-account span').all()
+        for tr in accounts_from_trs:
+            account_spans = await tr.locator('button.switch-account span').all()
 
-            name = await account_span[0].inner_text()
-            cnpj = await account_span[3].inner_text()
+            name = await account_spans[0].inner_text()
+            cnpj = await account_spans[3].inner_text()
 
             if name == account['name'] and cnpj == account['cnpj']:
-                await account_span[0].click()
+                await account_spans[0].click()
                 await self.page.wait_for_selector('dialog.ids-alert--success')
                 SystemMessages().log(
                     f'Conta trocada para {name} - {cnpj}')
