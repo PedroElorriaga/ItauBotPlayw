@@ -31,8 +31,11 @@ class DownloadPage(BasePage):
             await locator.wait_for(timeout=2500)
             return SystemMessages().error('Nenhum pagamento encontrado!')
         except LocatorTimeoutPlaywright.TimeoutError:
-            # VERIFICA SE EXISTE O TUTORIAL, SE NÃO, LANÇA EXCEPTION
-            await self.iframe_page.content_frame.get_by_role("button", name="Fechar tutorial").click(timeout=2500)
+            try:
+                # VERIFICA SE EXISTE O TUTORIAL, SE NÃO, LANÇA EXCEPTION
+                await self.iframe_page.content_frame.get_by_role("button", name="Fechar tutorial").click(timeout=2500)
+            except LocatorTimeoutPlaywright.TimeoutError:
+                pass
         payments_receipt_trs = await self.iframe_page.content_frame.locator('#new-table tbody tr').all()
         SystemMessages().log('Baixando comprovantes...')
 
@@ -51,7 +54,7 @@ class DownloadPage(BasePage):
 
                 async with self.page.expect_download() as download_info:
                     await self.iframe_page.content_frame.get_by_text("salvar_outline salvar em PDF").click()
-                print(payment_receipt)
+
                 download = await download_info.value
                 filename = (f'{payment_receipt["receipt_date"].replace("/", ".")}'
                             f'_{payment_receipt["receipt_company"]}'
