@@ -26,3 +26,21 @@ class SystemMessages:
 
     def success(self, message: str):
         print(self.Fore.GREEN + message + self.Fore.RESET)
+
+    def error(self, message: str):
+        print(self.Fore.RED + message + self.Fore.RESET)
+
+
+def access_download_dir(filename: str):
+    import os
+    path_dir = os.path.join(os.getcwd(), 'docs/downloads')
+    save_path = os.path.join(path_dir, filename)
+
+    return save_path
+
+
+def check_if_data_dont_have_special_character(data: str):
+    import re
+    check = re.sub(r'[<>:"/\\|?*]', "_", data)
+
+    return check
