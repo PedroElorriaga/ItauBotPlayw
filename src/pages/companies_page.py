@@ -39,7 +39,7 @@ class CompaniesPage(BasePage):
             number = await account_spans[2].inner_text()
             cnpj = await account_spans[3].inner_text()
 
-            account_company = f'{name} - {cnpj}'
+            account_company = f'{name} - {cnpj} - {number}'
             is_account_company_included = account_company in self.companies_to_execute
             can_execute_company = True if len(
                 self.companies_to_execute) == 0 else is_account_company_included
@@ -49,9 +49,11 @@ class CompaniesPage(BasePage):
             VALOR DA VARIAVEL is_account_company_included (TRUE OU FALSE)
 
             ESSA LÓGICA PERMITE QUE TODAS AS EMPRESAS QUE POSSAM SER EXECUTADAS SEJAM
-            ADICIONADAS A LISTA accounts, CASO A LISTA DE companies_to_execute FOR VAZIA
+            ADIONADAS A LISTA accounts, CASO A LISTA DE companies_to_execute FOR VAZIA
             E EXECUTA APENAS AS EMPRESAS QUE ESTÃO NA LISTA DE companies_to_execute CASO 
             ELA NÃO SEJA VAZIA
+
+            FAVOR NÃO FUÇAR NESSA LÓGICA
             """
             if can_execute_company:
                 accounts.append({
@@ -82,13 +84,14 @@ class CompaniesPage(BasePage):
             account_spans = await tr.locator('button.switch-account span').all()
 
             name = await account_spans[0].inner_text()
+            number = await account_spans[2].inner_text()
             cnpj = await account_spans[3].inner_text()
 
-            if name == account['name'] and cnpj == account['cnpj']:
+            if name == account['name'] and cnpj == account['cnpj'] and number == account['number']:
                 await account_spans[0].click()
                 await self.page.wait_for_selector('dialog.ids-alert--success')
                 SystemMessages().log(
-                    f'Conta trocada para {name} - {cnpj}')
+                    f'Conta trocada para {name} - {cnpj} - {number}')
                 return
 
     async def goto_download_company_page(self):
