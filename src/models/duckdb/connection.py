@@ -24,14 +24,14 @@ class DuckConnection:
                 INSERT OR IGNORE INTO progress VALUES (?, ?, ?, ?, 'pending')
             """, [company['index'], company['name'], company['cnpj'], company['number']])
 
-    def search_companies_status_pending(self):
+    def search_all_companies(self):
         try:
             pendente_status_company = self.__connection.execute("""
-                SELECT name, cnpj, conta FROM progress WHERE status = 'pending' ORDER BY idx
+                SELECT name, cnpj, conta, status FROM progress ORDER BY idx
             """).fetchall()
         except InvalidTableDuckDb.CatalogException:
             self.__create_progress_table()
-            return self.search_companies_status_pending()
+            return self.search_all_companies()
 
         return pendente_status_company
 
