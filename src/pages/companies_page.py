@@ -1,6 +1,7 @@
 from src.pages.base_page import BasePage
 from typing import List
 from src.utils.common_utils import SystemMessages
+from src.utils.errors_utils import LocatorTimeoutPlaywright
 
 
 class CompaniesPage(BasePage):
@@ -13,6 +14,7 @@ class CompaniesPage(BasePage):
         await self.page.get_by_role("radio", name="Múltiplas contas").click()
 
         self.iframe_page = self.page.locator('mf-lista-contas')
+
         first_account_from_tr = self.iframe_page.locator(
             'ul.ids-list li')
         first_account_spans = await first_account_from_tr.locator('span').all()
@@ -73,6 +75,7 @@ class CompaniesPage(BasePage):
 
     async def change_account(self, account: dict):
         await self.page.get_by_role("button", name="Trocar de conta").click()
+        self.iframe_page = self.page.locator('mf-lista-contas')
         accounts_from_trs = await self.iframe_page.locator('ul#list-accounts-container li').all()
 
         for tr in accounts_from_trs:
@@ -89,9 +92,18 @@ class CompaniesPage(BasePage):
                 return
 
     async def goto_download_company_page(self):
-        await self.page.get_by_role("menuitem", name="Contas a pagar botão", exact=True).click()
-        await self.page.wait_for_timeout(1000)
-        await self.page.get_by_role("menuitem", name="Ir para Contas a pagar botão").click()
-        await self.page.wait_for_timeout(5000)
+        try:
+            await self.page.get_by_role("menuitem", name="Contas a pagar botão", exact=True).click()
+            await self.page.wait_for_timeout(1000)
+            await self.page.get_by_role("menuitem", name="Ir para Contas a pagar botão").click(timeout=4500)
+            await self.page.wait_for_timeout(1500)
+        except LocatorTimeoutPlaywright.TimeoutError:
+            await self.page.get_by_role("tab", name="Fechar guia - consultar").click()
+            await self.page.wait_for_timeout(2500)
+            return await self.goto_download_company_page()
+        except Exception as err:
+            SystemMessages().error('Algum erro inesperado aconteceu :(')
+            raise Exception(err)
+
         self.iframe_page = self.page.locator('iframe.iframe-nf2')
         await self.iframe_page.content_frame.get_by_role("link", name="Consultar pagamentos,").click()
