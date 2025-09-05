@@ -13,6 +13,7 @@ class DuckConnection:
             idx INTEGER PRIMARY KEY,
             name TEXT,
             cnpj TEXT,
+            conta TEXT,                      
             status TEXT -- 'pending', 'done', 'error
         )
         """)
@@ -20,13 +21,13 @@ class DuckConnection:
     def insert_companies_if_not_exists(self, companies: List[str]):
         for company in companies:
             self.__connection.execute("""
-                INSERT OR IGNORE INTO progress VALUES (?, ?, ?, 'pending')
-            """, [company['index'], company['name'], company['cnpj']])
+                INSERT OR IGNORE INTO progress VALUES (?, ?, ?, ?, 'pending')
+            """, [company['index'], company['name'], company['cnpj'], company['number']])
 
     def search_companies_status_pending(self):
         try:
             pendente_status_company = self.__connection.execute("""
-                SELECT name, cnpj FROM progress WHERE status = 'pending' ORDER BY idx
+                SELECT name, cnpj, conta FROM progress WHERE status = 'pending' ORDER BY idx
             """).fetchall()
         except InvalidTableDuckDb.CatalogException:
             self.__create_progress_table()
@@ -34,15 +35,15 @@ class DuckConnection:
 
         return pendente_status_company
 
-    def update_company_status(self, idx: int, status: Literal['done', 'error']):
+    def update_company_status(self, account: dict, status: Literal['done', 'error']):
         if status == 'done':
             self.__connection.execute("""
-                UPDATE progress SET status = 'done' WHERE idx = ?
-            """, [idx])
+                UPDATE progress SET status = 'done' WHERE cnpj = ? AND conta = ?
+            """, [account['cnpj'], account['number']])
         elif status == 'error':
             self.__connection.execute("""
-                UPDATE progress SET status = 'error' WHERE idx = ?
-            """, [idx])
+                UPDATE progress SET status = 'error' WHERE cnpj = ? AND conta = ?
+            """, [account['cnpj'], account['number']])
         else:
             raise InvaliDuckDbQuery(
                 'Invalid status argument - this query only accept (done or error) argument')
