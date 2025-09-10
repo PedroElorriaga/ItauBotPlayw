@@ -25,3 +25,9 @@ class ItauConfigs:
         'data')['input_data']['companies_to_execute']
     DATE_BEGIN = read_json_file('data')['input_data']['date_begin']
     DATE_END = read_json_file('data')['input_data']['date_end']
+
+
+class NetsuiteConfigs:
+    USER_NETSUIT = read_json_file('data')['settings']['netsuite']['user']
+    PASSWORD_NETSUIT = read_json_file(
+        'data')['settings']['netsuite']['password']
