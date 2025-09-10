@@ -1,7 +1,8 @@
-from src.pages.login_page import LoginPage
-from src.pages.companies_page import CompaniesPage
-from src.pages.download_page import DownloadPage
-from src.config.settings import PlaywrightsConfigs, ItauConfigs
+from src.pages.itau_page.login_page import LoginPage
+from src.pages.itau_page.companies_page import CompaniesPage
+from src.pages.itau_page.download_page import DownloadPage
+from src.pages.netsuite_page.login_page import LoginPage
+from src.config.settings import PlaywrightsConfigs, ItauConfigs, NetsuiteConfigs
 from src.utils.common_utils import tuple_list_to_str_list, SystemMessages
 from src.models.duckdb.connection import DuckConnection
 import asyncio
@@ -47,6 +48,7 @@ async def do_itau_tasks():
         duckdb_connection.insert_companies_if_not_exists(accounts)
 
         for account in accounts:
+            # TODO FAZER TENTATIVAS PARA CADA EMPRESA
             SystemMessages().log(
                 f'Trocando conta para {account["name"]} - {account["number"]}...')
 
@@ -65,12 +67,21 @@ async def do_itau_tasks():
 
         SystemMessages().success('Tarefas do Itau foram executadas com sucesso!')
 
+
+async def do_netsuite_tasks():
+    async with PlaywrightsConfigs() as context:
+        page = await context.new_page()
+        login_netsuite = LoginPage(
+            page, 'https://system.netsuite.com/pages/customerlogin.jsp')
+        await login_netsuite.goto_login()
+
 if __name__ == '__main__':
     tentativas_mvp = 3
 
     while tentativas_mvp > 0:
         try:
             asyncio.run(do_itau_tasks())
+            asyncio.run(do_netsuite_tasks())
             break
         except Exception as err:
             SystemMessages().error(err)
