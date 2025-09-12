@@ -2,7 +2,7 @@ from src.pages.base_page import BasePage
 from src.config.settings import ItauConfigs
 
 
-class LoginPage(BasePage):
+class LoginPageItau(BasePage):
     def __init__(self, page, operator_password: str, base_url: str = None):
         super().__init__(page, base_url)
         self.__operator_password = operator_password
