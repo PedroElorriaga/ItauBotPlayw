@@ -17,7 +17,7 @@ async def connect_duckdb():
         return duckdb
     except ConnectionFailedDuckDb.IOException:
         raise ConnectionFailedDuckDb(
-            'Failed to connect in DuckDb - please check if there is any connections opened')
+            'Failed to connect in DuckDB engine')
 
 
 async def do_itau_tasks():

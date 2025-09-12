@@ -7,4 +7,4 @@ class LoginPageNetsuite(BasePage):
 
     async def goto_login(self):
         await self.open_url()
-        await self.page.wait_for_timeout(10000)
+        await self.page.wait_for_timeout(5000)
