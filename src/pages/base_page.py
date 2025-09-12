@@ -9,3 +9,4 @@ class BasePage:
 
     async def open_url(self):
         await self.page.goto(self.base_url)
+        await self.page.bring_to_front()
