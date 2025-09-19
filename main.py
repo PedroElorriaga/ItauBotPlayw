@@ -2,6 +2,7 @@ from src.pages.itau_page.login_page import LoginPageItau
 from src.pages.itau_page.companies_page import CompaniesPage
 from src.pages.itau_page.download_page import DownloadPage
 from src.pages.netsuite_page.login_page import LoginPageNetsuite
+from src.pages.netsuite_page.upload_page import UploadPage
 from src.config.settings import PlaywrightsConfigs, ItauConfigs, NetsuiteConfigs
 from src.utils.common_utils import tuple_list_to_str_list, SystemMessages, RetryExecuter
 from src.models.duckdb.connection import DuckConnection
@@ -22,7 +23,6 @@ async def connect_duckdb():
 
 async def do_itau_tasks():
     async with PlaywrightsConfigs() as context:
-        retry = RetryExecuter()
         duckdb_connection = await connect_duckdb()
 
         companies_from_progress_table = tuple_list_to_str_list(
@@ -41,8 +41,8 @@ async def do_itau_tasks():
 
         page = await context.new_page()
         login_itau = LoginPageItau(
-            page, ItauConfigs.OPERATOR_ITAU, 'https://www.itau.com.br/itaubba-pt',)
-        await login_itau.goto_login()
+            page, ItauConfigs.OPERATOR_ITAU, ItauConfigs.PASSWORD_ITAU, 'https://www.itau.com.br/itaubba-pt',)
+        await retry.run(login_itau.goto_login)
 
         companies_itau = CompaniesPage(
             page, companies_to_execute=companies_to_execute)
@@ -76,9 +76,15 @@ async def do_netsuite_tasks():
     async with PlaywrightsConfigs() as context:
         page = await context.new_page()
         login_netsuite = LoginPageNetsuite(
-            page, 'https://system.netsuite.com/pages/customerlogin.jsp')
-        await login_netsuite.goto_login()
+            page, NetsuiteConfigs.USER_NETSUITE, NetsuiteConfigs.PASSWORD_NETSUITE,
+            NetsuiteConfigs.ANSWERS, 'https://system.netsuite.com/pages/customerlogin.jsp')
+        await retry.run(login_netsuite.goto_login)
+
+        upload_netsuite = UploadPage(
+            page, 'https://6391568.app.netsuite.com/app/common/search/search.nl?searchtype=Custom&rectype=286&%E2%80%A6%20NetSuite%20Login')
+        await upload_netsuite.goto_search_page()
 
 if __name__ == '__main__':
+    retry = RetryExecuter()
     asyncio.run(do_itau_tasks())
     asyncio.run(do_netsuite_tasks())
