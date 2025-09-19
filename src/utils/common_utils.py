@@ -4,7 +4,7 @@ from typing import Callable, Awaitable, Any
 
 def read_json_file(file: str) -> Any:
     import json
-    with open(file + '.json', 'r') as json_file:
+    with open(file + '.json', 'r', encoding="utf-8") as json_file:
         data = json.load(json_file)
 
     return data
