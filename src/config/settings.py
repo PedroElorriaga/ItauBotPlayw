@@ -19,15 +19,26 @@ class PlaywrightsConfigs:
 
 
 class ItauConfigs:
-    OPERATOR_ITAU = read_json_file('data')['settings']['itau']['operator']
-    PASSWORD_ITAU = read_json_file('data')['settings']['itau']['password']
-    COMPANIES_TO_EXECUTE = read_json_file(
-        'data')['input_data']['companies_to_execute']
-    DATE_BEGIN = read_json_file('data')['input_data']['date_begin']
-    DATE_END = read_json_file('data')['input_data']['date_end']
+    __configSettings = read_json_file('data')['settings']['itau']
+    __configInputData = read_json_file('data')['input_data']
+
+    OPERATOR_ITAU = __configSettings['operator']
+    PASSWORD_ITAU = __configSettings['password']
+    COMPANIES_TO_EXECUTE = __configInputData['companies_to_execute']
+    DATE_BEGIN = __configInputData['date_begin']
+    DATE_END = __configInputData['date_end']
 
 
 class NetsuiteConfigs:
-    USER_NETSUIT = read_json_file('data')['settings']['netsuite']['user']
-    PASSWORD_NETSUIT = read_json_file(
-        'data')['settings']['netsuite']['password']
+    __configSettings = read_json_file('data')['settings']['netsuite']
+
+    USER_NETSUITE = __configSettings['user']
+    PASSWORD_NETSUITE = __configSettings['password']
+    ANSWERS = [
+        (__configSettings['security1']['question'],
+         __configSettings['security1']['answer']),
+        (__configSettings['security2']['question'],
+         __configSettings['security2']['answer']),
+        (__configSettings['security3']['question'],
+         __configSettings['security3']['answer'])
+    ]
