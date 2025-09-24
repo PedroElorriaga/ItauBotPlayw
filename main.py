@@ -4,7 +4,7 @@ from src.pages.itau_page.download_page import DownloadPage
 from src.pages.netsuite_page.login_page import LoginPageNetsuite
 from src.pages.netsuite_page.upload_page import UploadPage
 from src.config.settings import PlaywrightsConfigs, ItauConfigs, NetsuiteConfigs
-from src.utils.common_utils import tuple_list_to_str_list, SystemMessages, RetryExecuter
+from src.utils.common_utils import *
 from src.models.duckdb.connection import DuckConnection
 import asyncio
 
@@ -17,6 +17,8 @@ async def connect_duckdb():
         SystemMessages().success('Feito conexão com a base de dados...')
         return duckdb
     except ConnectionFailedDuckDb.IOException:
+        SystemMessages().error(
+            'Ocorreu algum erro ao tentar se conectar com a base de dados :(')
         raise ConnectionFailedDuckDb(
             'Failed to connect in DuckDB engine')
 
@@ -62,7 +64,7 @@ async def do_itau_tasks():
 
                 await retry.run(companies_itau.goto_download_company_page)
                 download_itau = DownloadPage(
-                    page, date_begin=ItauConfigs.DATE_BEGIN, date_end=ItauConfigs.DATE_END)
+                    page, date_begin=ItauConfigs.DATE_BEGIN, date_end=ItauConfigs.DATE_END, cnpj_company=account['cnpj'])
                 await retry.run(download_itau.search_payments)
 
                 duckdb_connection.update_company_status(account, 'done')
@@ -82,7 +84,10 @@ async def do_netsuite_tasks():
 
         upload_netsuite = UploadPage(
             page, 'https://6391568.app.netsuite.com/app/common/search/search.nl?searchtype=Custom&rectype=286&%E2%80%A6%20NetSuite%20Login')
-        await upload_netsuite.goto_search_page()
+
+        files = get_all_files_in_download_dir()
+        for file in files:
+            await upload_netsuite.upload_receipt(file)
 
 if __name__ == '__main__':
     retry = RetryExecuter()
