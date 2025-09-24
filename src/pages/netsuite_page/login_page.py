@@ -24,17 +24,17 @@ class LoginPageNetsuite(BasePage):
 
     async def __select_account_type(self):
         try:
-            await self.page.get_by_role("row", name="Grupo Arch Capital PRODUCTION").get_by_role("link").click(timeout=3500)
+            await self.page.get_by_role("row", name="Grupo Arch Capital PRODUCTION").get_by_role("link").click(timeout=5000)
             await self.page.wait_for_timeout(3000)
 
-            await self.__answer_security_question()
-
-            SystemMessages().success('Login netsuite efetuado com sucesso!')
         except LocatorTimeoutPlaywright.TimeoutError:
             SystemMessages().success('Login netsuite efetuado com sucesso!')
         except Exception as err:
             SystemMessages().error('Algum erro inesperado aconteceu :(')
             raise Exception(err)
+
+        await self.__answer_security_question()
+        SystemMessages().success('Login netsuite efetuado com sucesso!')
 
     async def __answer_security_question(self):
         question_tds = await self.page.locator('.smalltextnolink.text-opensans').all()
@@ -43,5 +43,5 @@ class LoginPageNetsuite(BasePage):
         for security in self.__security_netsuite:
             if await question_tds[2].inner_text() in security:
                 await answer_input.fill(security[1])
-                await self.page.get_by_role("button", name="Enviar").click()
+                await self.page.get_by_role("button", name="Submit").click()
                 break
