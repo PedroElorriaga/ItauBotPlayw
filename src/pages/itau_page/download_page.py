@@ -4,10 +4,11 @@ from src.utils.errors_utils import LocatorTimeoutPlaywright
 
 
 class DownloadPage(BasePage):
-    def __init__(self, page, date_begin: str, date_end: str, base_url=None):
+    def __init__(self, page, date_begin: str, date_end: str, cnpj_company: str, base_url=None):
         super().__init__(page, base_url)
         self.__date_begin = date_begin
         self.__date_end = date_end
+        self.__cnpj_company = cnpj_company
         self.payment_receipts = []
 
     async def search_payments(self):
@@ -45,8 +46,9 @@ class DownloadPage(BasePage):
 
             if payment_receipt_status == 'Efetuado':
                 payment_receipt = {
+                    'receipt_name_beneficiary': await payment_receipt_spans[0].inner_text(),
+                    'receipt_cnpj_beneficiary': await payment_receipt_spans[1].inner_text(),
                     'receipt_date': await payment_receipt_spans[4].inner_text(),
-                    'receipt_company': await payment_receipt_spans[0].inner_text(),
                     'receipt_value': await payment_receipt_spans[5].inner_text()
                 }
                 self.payment_receipts.append(payment_receipt)
@@ -57,8 +59,11 @@ class DownloadPage(BasePage):
 
                 download = await download_info.value
                 filename = (f'{payment_receipt["receipt_date"].replace("/", ".")}'
-                            f'_{payment_receipt["receipt_company"]}'
-                            f'_R$-{payment_receipt["receipt_value"]}.pdf')
+                            f'_{payment_receipt["receipt_name_beneficiary"]}'
+                            # receipt_cnpj_beneficiary É DIFERENTE DE self.__cnpj_company
+                            f'_{payment_receipt["receipt_cnpj_beneficiary"].replace("/", ".")}'
+                            f'_R$-{payment_receipt["receipt_value"]}'
+                            f'_{self.__cnpj_company.replace("/", ".")}.pdf')
 
                 await download.save_as(access_download_dir(check_if_data_dont_have_special_character(filename)))
                 await self.iframe_page.content_frame.get_by_role("button", name="fechar").click()
