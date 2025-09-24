@@ -41,6 +41,13 @@ def access_download_dir(filename: str) -> str:
     return save_path
 
 
+def get_all_files_in_download_dir() -> List[str]:
+    import os
+    files_list = os.listdir(os.path.join(os.getcwd(), 'docs/downloads'))
+
+    return files_list
+
+
 def check_if_data_dont_have_special_character(data: str) -> str:
     import re
     check = re.sub(r'[<>:"/\\|?*]', "_", data)
@@ -65,3 +72,11 @@ class RetryExecuter:
                 if attempts == 0:
                     SystemMessages().error(f'RetryExecuter -> {str(err)}')
                     raise err
+
+
+def convert_int_to_brl_currency(value: int) -> str:
+    value = value / 100
+    new_value = '{:,.2f}'.format(value).replace(
+        ',', 'X').replace('.', ',').replace('X', '.')
+
+    return new_value
