@@ -2,6 +2,7 @@ from src.pages.itau_page.login_page import LoginPageItau
 from src.pages.itau_page.companies_page import CompaniesPage
 from src.pages.itau_page.download_page import DownloadPage
 from src.pages.netsuite_page.login_page import LoginPageNetsuite
+from src.pages.netsuite_page.search_page import SearchPage
 from src.pages.netsuite_page.upload_page import UploadPage
 from src.config.settings import PlaywrightsConfigs, ItauConfigs, NetsuiteConfigs
 from src.utils.common_utils import *
@@ -48,7 +49,7 @@ async def do_itau_tasks():
 
         companies_itau = CompaniesPage(
             page, companies_to_execute=companies_to_execute)
-        accounts = await companies_itau.get_accounts()
+        accounts = await retry.run(companies_itau.get_accounts)
         duckdb_connection.insert_companies_if_not_exists(accounts)
 
         for account in accounts:
@@ -71,23 +72,36 @@ async def do_itau_tasks():
             except Exception as err:
                 duckdb_connection.update_company_status(account, 'error')
 
-            SystemMessages().success('Tarefas do Itau foram executadas com sucesso!')
+        SystemMessages().success('Tarefas do Itau foram executadas com sucesso!')
 
 
 async def do_netsuite_tasks():
     async with PlaywrightsConfigs() as context:
-        page = await context.new_page()
-        login_netsuite = LoginPageNetsuite(
-            page, NetsuiteConfigs.USER_NETSUITE, NetsuiteConfigs.PASSWORD_NETSUITE,
-            NetsuiteConfigs.ANSWERS, 'https://system.netsuite.com/pages/customerlogin.jsp')
-        await retry.run(login_netsuite.goto_login)
-
-        upload_netsuite = UploadPage(
-            page, 'https://6391568.app.netsuite.com/app/common/search/search.nl?searchtype=Custom&rectype=286&%E2%80%A6%20NetSuite%20Login')
-
         files = get_all_files_in_download_dir()
-        for file in files:
-            await upload_netsuite.upload_receipt(file)
+        if files:
+            page = await context.new_page()
+            login_netsuite = LoginPageNetsuite(
+                page, NetsuiteConfigs.USER_NETSUITE, NetsuiteConfigs.PASSWORD_NETSUITE,
+                NetsuiteConfigs.ANSWERS, 'https://system.netsuite.com/pages/customerlogin.jsp')
+            await retry.run(login_netsuite.goto_login)
+
+            search_netsuite = SearchPage(
+                page, 'https://6391568.app.netsuite.com/app/common/search/search.nl?searchtype=Custom&rectype=286&%E2%80%A6%20NetSuite%20Login')
+
+            for file in files:
+                try:
+                    from src.utils.errors_utils import LocatorTimeoutPlaywright
+                    is_supplier_exists = await retry.run(search_netsuite.search_receipt, file)
+
+                    if is_supplier_exists:
+                        upload_page = UploadPage(page)
+                        await retry.run(upload_page.upload_file, file)
+
+                    delete_file_from_path(access_download_dir(file))
+                except LocatorTimeoutPlaywright.TimeoutError:
+                    pass
+
+        SystemMessages().success('Tarefas do NetSuite foram executadas com sucesso!')
 
 if __name__ == '__main__':
     retry = RetryExecuter()
