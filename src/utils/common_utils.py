@@ -35,10 +35,15 @@ class SystemMessages:
 
 def access_download_dir(filename: str) -> str:
     import os
-    path_dir = os.path.join(os.getcwd(), 'docs/downloads')
+    path_dir = os.path.join(os.getcwd(), 'docs\downloads')
     save_path = os.path.join(path_dir, filename)
 
     return save_path
+
+
+def delete_file_from_path(file_path: str) -> None:
+    import os
+    os.remove(file_path)
 
 
 def get_all_files_in_download_dir() -> List[str]:
