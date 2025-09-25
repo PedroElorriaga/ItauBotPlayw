@@ -71,6 +71,7 @@ class CompaniesPage(BasePage):
         else:
             accounts.insert(0, default_account)
 
+        await self.page.wait_for_timeout(2000)
         await self.iframe_page.get_by_role("button", name="fechar").click()
 
         return accounts
