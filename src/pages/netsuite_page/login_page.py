@@ -28,7 +28,7 @@ class LoginPageNetsuite(BasePage):
             await self.page.wait_for_timeout(3000)
 
         except LocatorTimeoutPlaywright.TimeoutError:
-            SystemMessages().success('Login netsuite efetuado com sucesso!')
+            pass
         except Exception as err:
             SystemMessages().error('Algum erro inesperado aconteceu :(')
             raise Exception(err)
