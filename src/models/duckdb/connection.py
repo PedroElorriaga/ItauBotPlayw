@@ -26,14 +26,14 @@ class DuckConnection:
 
     def search_all_companies(self):
         try:
-            pendente_status_company = self.__connection.execute("""
+            all_companies = self.__connection.execute("""
                 SELECT name, cnpj, conta, status FROM progress ORDER BY idx
             """).fetchall()
         except InvalidTableDuckDb.CatalogException:
             self.__create_progress_table()
             return self.search_all_companies()
 
-        return pendente_status_company
+        return all_companies
 
     def update_company_status(self, account: dict, status: Literal['done', 'error']):
         if status == 'done':
