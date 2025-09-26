@@ -13,8 +13,8 @@ import asyncio
 async def connect_duckdb():
     try:
         from src.utils.errors_utils import ConnectionFailedDuckDb
-        duckdb = DuckConnection(
-            'docs/database/companies.duckdb')
+        duckdb = DuckConnection(access_dir(
+            'docs\database', 'companies.duckdb'))
         SystemMessages().success('Feito conexão com a base de dados...')
         return duckdb
     except ConnectionFailedDuckDb.IOException:
@@ -45,11 +45,11 @@ async def do_itau_tasks():
         page = await context.new_page()
         login_itau = LoginPageItau(
             page, ItauConfigs.OPERATOR_ITAU, ItauConfigs.PASSWORD_ITAU, 'https://www.itau.com.br/itaubba-pt',)
-        await retry.run(login_itau.goto_login)
+        await login_itau.goto_login()
 
         companies_itau = CompaniesPage(
             page, companies_to_execute=companies_to_execute)
-        accounts = await retry.run(companies_itau.get_accounts)
+        accounts = await companies_itau.get_accounts()
         duckdb_connection.insert_companies_if_not_exists(accounts)
 
         for account in accounts:
@@ -69,7 +69,7 @@ async def do_itau_tasks():
                 await retry.run(download_itau.search_payments)
 
                 duckdb_connection.update_company_status(account, 'done')
-            except Exception as err:
+            except:
                 duckdb_connection.update_company_status(account, 'error')
 
         SystemMessages().success('Tarefas do Itau foram executadas com sucesso!')
@@ -77,33 +77,34 @@ async def do_itau_tasks():
 
 async def do_netsuite_tasks():
     async with PlaywrightsConfigs() as context:
+        duckdb_connection = await connect_duckdb()
+
         files = get_all_files_in_download_dir()
         if files:
             page = await context.new_page()
             login_netsuite = LoginPageNetsuite(
                 page, NetsuiteConfigs.USER_NETSUITE, NetsuiteConfigs.PASSWORD_NETSUITE,
                 NetsuiteConfigs.ANSWERS, 'https://system.netsuite.com/pages/customerlogin.jsp')
-            await retry.run(login_netsuite.goto_login)
+            await login_netsuite.goto_login()
 
             search_netsuite = SearchPage(
                 page, 'https://6391568.app.netsuite.com/app/common/search/search.nl?searchtype=Custom&rectype=286&%E2%80%A6%20NetSuite%20Login')
 
             for file in files:
-                try:
-                    from src.utils.errors_utils import LocatorTimeoutPlaywright
-                    is_supplier_exists = await retry.run(search_netsuite.search_receipt, file)
+                is_supplier_exists = await search_netsuite.search_receipt(file)
 
-                    if is_supplier_exists:
-                        upload_page = UploadPage(page)
-                        await retry.run(upload_page.upload_file, file)
+                if is_supplier_exists:
+                    upload_page = UploadPage(page)
+                    await upload_page.upload_file(file)
 
-                    delete_file_from_path(access_download_dir(file))
-                except LocatorTimeoutPlaywright.TimeoutError:
-                    pass
+                delete_file_from_path(access_dir('docs\downloads', file))
 
         SystemMessages().success('Tarefas do NetSuite foram executadas com sucesso!')
 
+        # if not get_all_files_in_download_dir():
+        #     duckdb_connection.drop_progress_table()
+
 if __name__ == '__main__':
     retry = RetryExecuter()
-    asyncio.run(do_itau_tasks())
-    asyncio.run(do_netsuite_tasks())
+    asyncio.run(retry.run(do_itau_tasks))
+    asyncio.run(retry.run(do_netsuite_tasks))
