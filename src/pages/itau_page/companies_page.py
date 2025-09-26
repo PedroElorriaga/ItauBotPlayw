@@ -77,6 +77,12 @@ class CompaniesPage(BasePage):
         return accounts
 
     async def change_account(self, account: dict):
+        try:
+            # TENTA FECHAR O SELETOR DE EMPRESAS CASO TENTA EXECUTAR DENOVO APOS ERRO
+            await self.iframe_page.get_by_role("button", name="fechar").click()
+        except:
+            pass
+
         await self.page.get_by_role("button", name="Trocar de conta").click()
         self.iframe_page = self.page.locator('mf-lista-contas')
         accounts_from_trs = await self.iframe_page.locator('ul#list-accounts-container li').all()
