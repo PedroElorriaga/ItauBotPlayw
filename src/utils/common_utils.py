@@ -33,9 +33,13 @@ class SystemMessages:
         print(self.Fore.RED + message + self.Fore.RESET)
 
 
-def access_download_dir(filename: str) -> str:
+def access_dir(path_dir: str, filename: str) -> str:
     import os
-    path_dir = os.path.join(os.getcwd(), 'docs\downloads')
+
+    if not os.path.exists(os.getcwd() + '\\' + path_dir):
+        os.makedirs(os.getcwd() + '\\' + path_dir)
+
+    path_dir = os.path.join(os.getcwd(), path_dir)
     save_path = os.path.join(path_dir, filename)
 
     return save_path
@@ -73,6 +77,7 @@ class RetryExecuter:
             try:
                 return await func(*args, **kwargs)
             except self.exception as err:
+                SystemMessages().log('Retrying again...')
                 attempts -= 1
                 if attempts == 0:
                     SystemMessages().error(f'RetryExecuter -> {str(err)}')
