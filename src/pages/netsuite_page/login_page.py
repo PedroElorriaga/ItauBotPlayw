@@ -24,11 +24,11 @@ class LoginPageNetsuite(BasePage):
 
     async def __select_account_type(self):
         try:
-            await self.page.get_by_role("row", name="Grupo Arch Capital PRODUCTION").get_by_role("link").click(timeout=5000)
+            await self.page.get_by_role("row", name="Grupo Arch Capital PRODUCTION").get_by_role("link").click(timeout=9000)
             await self.page.wait_for_timeout(3000)
 
         except LocatorTimeoutPlaywright.TimeoutError:
-            pass
+            return
         except Exception as err:
             SystemMessages().error('Algum erro inesperado aconteceu :(')
             raise Exception(err)
