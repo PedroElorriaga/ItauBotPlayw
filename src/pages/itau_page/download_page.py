@@ -1,5 +1,5 @@
 from src.pages.base_page import BasePage
-from src.utils.common_utils import access_download_dir, check_if_data_dont_have_special_character, SystemMessages
+from src.utils.common_utils import access_dir, check_if_data_dont_have_special_character, SystemMessages
 from src.utils.errors_utils import LocatorTimeoutPlaywright
 
 
@@ -65,7 +65,7 @@ class DownloadPage(BasePage):
                             f'_R$-{payment_receipt["receipt_value"]}'
                             f'_{self.__cnpj_company.replace("/", ".")}.pdf')
 
-                await download.save_as(access_download_dir(check_if_data_dont_have_special_character(filename)))
+                await download.save_as(access_dir('docs/downloads', check_if_data_dont_have_special_character(filename)))
                 await self.iframe_page.content_frame.get_by_role("button", name="fechar").click()
                 await self.page.wait_for_timeout(1000)
 
