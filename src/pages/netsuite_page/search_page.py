@@ -61,6 +61,8 @@ class SearchPage(BasePage):
             return False
 
         await self.page.locator("#submitter").click()
+
         SystemMessages().success('Fornecedor Encontrado!')
-        await self.page.wait_for_timeout(1500)
+
+        await self.page.wait_for_timeout(3000)
         return True
