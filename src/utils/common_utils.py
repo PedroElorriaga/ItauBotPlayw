@@ -1,5 +1,5 @@
 from typing import List
-from typing import Callable, Awaitable, Any
+from typing import Any
 
 
 def read_json_file(file: str) -> Any:
@@ -18,19 +18,6 @@ def tuple_list_to_str_list(data: List[tuple]) -> List[Any]:
         return string_list
 
     return []
-
-
-class SystemMessages:
-    from colorama import Fore
-
-    def log(self, message: str) -> Any:
-        print(self.Fore.MAGENTA + message + self.Fore.RESET)
-
-    def success(self, message: str) -> Any:
-        print(self.Fore.GREEN + message + self.Fore.RESET)
-
-    def error(self, message: str) -> Any:
-        print(self.Fore.RED + message + self.Fore.RESET)
 
 
 def access_dir(path_dir: str, filename: str) -> str:
@@ -62,26 +49,6 @@ def check_if_data_dont_have_special_character(data: str) -> str:
     check = re.sub(r'[<>:"/\\|?*]', "_", data)
 
     return check
-
-
-class RetryExecuter:
-    def __init__(self):
-        self.attempts = 3
-        self.exception = Exception
-
-    async def run(self, func: Callable[..., Awaitable[Any]], *args, **kwargs) -> Any:
-        from src.utils.common_utils import SystemMessages
-
-        attempts = self.attempts
-        while attempts > 0:
-            try:
-                return await func(*args, **kwargs)
-            except self.exception as err:
-                SystemMessages().log('Retrying again...')
-                attempts -= 1
-                if attempts == 0:
-                    SystemMessages().error(f'RetryExecuter -> {str(err)}')
-                    raise err
 
 
 def convert_int_to_brl_currency(value: int) -> str:
