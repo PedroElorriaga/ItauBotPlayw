@@ -1,6 +1,6 @@
 from src.pages.base_page import BasePage
 from typing import List
-from src.utils.common_utils import SystemMessages
+from src.services.system_messages import SystemMessages
 from src.utils.errors_utils import LocatorTimeoutPlaywright
 
 
@@ -79,7 +79,7 @@ class CompaniesPage(BasePage):
     async def change_account(self, account: dict):
         try:
             # TENTA FECHAR O SELETOR DE EMPRESAS CASO TENTA EXECUTAR DENOVO APOS ERRO
-            await self.iframe_page.get_by_role("button", name="fechar").click()
+            await self.iframe_page.get_by_role("button", name="fechar").click(timeout=3000)
         except:
             pass
 
@@ -97,8 +97,7 @@ class CompaniesPage(BasePage):
             if name == account['name'] and cnpj == account['cnpj'] and number == account['number']:
                 await account_spans[0].click()
                 await self.page.wait_for_selector('dialog.ids-alert--success')
-                SystemMessages().log(
-                    f'Conta trocada para {name} - {cnpj} - {number}')
+
                 return
 
     async def goto_download_company_page(self):

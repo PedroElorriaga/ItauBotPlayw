@@ -1,5 +1,5 @@
 from src.pages.base_page import BasePage
-from src.utils.common_utils import SystemMessages
+from src.services.system_messages import SystemMessages
 
 
 class LoginPageItau(BasePage):

@@ -1,5 +1,6 @@
 from src.pages.base_page import BasePage
-from src.utils.common_utils import convert_int_to_brl_currency, SystemMessages
+from src.utils.common_utils import convert_int_to_brl_currency
+from src.services.system_messages import SystemMessages
 
 
 class SearchPage(BasePage):

@@ -1,5 +1,6 @@
 from src.pages.base_page import BasePage
-from src.utils.common_utils import access_dir, check_if_data_dont_have_special_character, SystemMessages
+from src.utils.common_utils import access_dir, check_if_data_dont_have_special_character
+from src.services.system_messages import SystemMessages
 from src.utils.errors_utils import LocatorTimeoutPlaywright
 
 
