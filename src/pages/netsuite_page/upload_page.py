@@ -1,5 +1,6 @@
 from src.pages.base_page import BasePage
-from src.utils.common_utils import access_dir, SystemMessages
+from src.utils.common_utils import access_dir
+from src.services.system_messages import SystemMessages
 
 
 class UploadPage(BasePage):
@@ -12,7 +13,15 @@ class UploadPage(BasePage):
             SystemMessages().error('Nenhum comprovante encontrado')
             return
 
-        await self.page.get_by_role("link", name="Fatura #").click()
+        try:
+            # VERIFICA SE A FATURA É PRÉ PAGAMENTO
+            await self.page.get_by_role("link", name="Pré-pagamento ao fornecedor #").click(timeout=3000)
+            SystemMessages().error('Comprovante com Status de pré pagamento')
+            return
+        except:
+            pass
+
+        await self.page.get_by_role("link", name="Fatura #").click(timeout=3000)
         await self.page.wait_for_timeout(2000)
         await self.page.locator("#main_form").get_by_role("listitem").filter(has_text="arquivo Nova nota Status").get_by_role("link").click()
 
