@@ -1,11 +1,11 @@
-import duckdb
 from typing import List, Literal
 from src.utils.errors_utils import InvaliDuckDbQuery, InvalidTableDuckDb
+from duckdb import DuckDBPyConnection
 
 
-class DuckConnection:
-    def __init__(self, url: str):
-        self.__connection = duckdb.connect(url)
+class ProgressRepository:
+    def __init__(self, connection: DuckDBPyConnection):
+        self.__connection = connection
 
     def __create_progress_table(self):
         self.__connection.execute("""
