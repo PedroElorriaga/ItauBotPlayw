@@ -43,5 +43,6 @@ class LoginPageNetsuite(BasePage):
         for security in self.__security_netsuite:
             if await question_tds[2].inner_text() in security:
                 await answer_input.fill(security[1])
-                await self.page.get_by_role("button", name="Submit").click()
+                # BOTAO DE ENVIAR
+                await self.page.locator('xpath=//html/body/div[2]/div[1]/form/table/tbody/tr[4]/td/input').click()
                 break

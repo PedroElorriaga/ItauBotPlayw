@@ -21,7 +21,7 @@ class UploadPage(BasePage):
         except:
             pass
 
-        await self.page.get_by_role("link", name="Fatura #").click(timeout=3000)
+        await self.page.get_by_role("link", name="Fatura #").click(timeout=10000)
         await self.page.wait_for_timeout(2000)
         await self.page.locator("#main_form").get_by_role("listitem").filter(has_text="arquivo Nova nota Status").get_by_role("link").click()
 

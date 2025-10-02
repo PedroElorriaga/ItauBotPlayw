@@ -83,7 +83,7 @@ async def do_netsuite_tasks():
 
                 if is_supplier_exists:
                     upload_page = UploadPage(page)
-                    await retry.run(upload_page.upload_file, file)
+                    await upload_page.upload_file(file)
 
                 delete_file_from_path(access_dir('docs\downloads', file))
         else:
