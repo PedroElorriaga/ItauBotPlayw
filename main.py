@@ -96,6 +96,8 @@ async def do_netsuite_tasks():
             progress_repository.drop_progress_table()
 
 if __name__ == '__main__':
+    check_playwright_install()
+
     retry = RetryExecuter()
     connection = DuckConnection(access_dir(
         'docs\database', 'companies.duckdb')).connect()

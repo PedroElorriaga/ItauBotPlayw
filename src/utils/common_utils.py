@@ -57,3 +57,11 @@ def convert_int_to_brl_currency(value: int) -> str:
         ',', 'X').replace('.', ',').replace('X', '.')
 
     return new_value
+
+
+def check_playwright_install():
+    import subprocess
+    import sys
+
+    subprocess.check_call([sys.executable, '-m',
+                          'playwright', 'install', 'chromium'])

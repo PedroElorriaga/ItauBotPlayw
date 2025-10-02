@@ -17,4 +17,4 @@ class RetryExecuter:
                 attempts -= 1
                 if attempts == 0:
                     SystemMessages().error(f'RetryExecuter -> {str(err)}')
-                    raise err
+                    raise
