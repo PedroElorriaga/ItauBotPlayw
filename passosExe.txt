@@ -5,7 +5,8 @@ Segundo
 - r'<CAMINHO_DO_SEU_AMBIENTE>\Lib\site-packages\playwright' altere para o seu CAMINHO_DO_SEU_AMBIENTE
 
 Terceiro
-- Abra o cmd se estiver no windows e execute os seguintes comandos
+- Abra o cmd no caminho raiz da pasta se estiver no windows e execute os seguintes comandos
+    - pipenv shell
     - set PLAYWRIGHT_BROWSERS_PATH=0
     - playwright install chromium
 

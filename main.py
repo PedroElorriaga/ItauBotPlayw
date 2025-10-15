@@ -91,7 +91,7 @@ async def do_netsuite_tasks():
             return
 
         SystemMessages().success('✅ Tarefas do NetSuite foram executadas com sucesso!')
-        input('Pressione ENTER para encerrar o programa')
+        input('\nPressione ENTER para encerrar o programa')
 
         if not get_all_files_in_download_dir():
             progress_repository.drop_progress_table()
