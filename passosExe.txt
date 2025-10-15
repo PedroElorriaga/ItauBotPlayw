@@ -1,0 +1,16 @@
+Primeiro 
+- faça um clone do main-example.spec com o nome main.spec
+
+Segundo
+- r'<CAMINHO_DO_SEU_AMBIENTE>\Lib\site-packages\playwright' altere para o seu CAMINHO_DO_SEU_AMBIENTE
+
+Terceiro
+- Abra o cmd se estiver no windows e execute os seguintes comandos
+    - set PLAYWRIGHT_BROWSERS_PATH=0
+    - playwright install chromium
+
+Quarto
+- Execute o pipenv run build, para buildar o projeto
+
+Quinto
+- Execute o exe que esta no dist (Pode criar um atalho se quiser)

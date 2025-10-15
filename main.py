@@ -91,13 +91,12 @@ async def do_netsuite_tasks():
             return
 
         SystemMessages().success('✅ Tarefas do NetSuite foram executadas com sucesso!')
+        input('Pressione ENTER para encerrar o programa')
 
         if not get_all_files_in_download_dir():
             progress_repository.drop_progress_table()
 
 if __name__ == '__main__':
-    check_playwright_install()
-
     retry = RetryExecuter()
     connection = DuckConnection(access_dir(
         'docs\database', 'companies.duckdb')).connect()

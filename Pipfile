@@ -9,11 +9,13 @@ colorama = "*"
 duckdb = "==1.3.2"
 playwright = "==1.54.0"
 tqdm = "==4.67.1"
+pyinstaller = "*"
 
 [dev-packages]
 
 [scripts]
 bot = "python main.py"
+build = "pyinstaller main.spec"
 
 [requires]
 python_version = "3.11"

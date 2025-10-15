@@ -4,7 +4,9 @@ from typing import Any
 
 def read_json_file(file: str) -> Any:
     import json
-    with open(file + '.json', 'r', encoding="utf-8") as json_file:
+
+    data_path = resource_path(file + '.json')
+    with open(data_path, 'r', encoding="utf-8") as json_file:
         data = json.load(json_file)
 
     return data
@@ -59,9 +61,10 @@ def convert_int_to_brl_currency(value: int) -> str:
     return new_value
 
 
-def check_playwright_install():
-    import subprocess
+def resource_path(relative_path: str) -> str:
+    import os
     import sys
 
-    subprocess.check_call([sys.executable, '-m',
-                          'playwright', 'install', 'chromium'])
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
