@@ -39,6 +39,7 @@ class CompaniesPage(BasePage):
             number = await account_spans[2].inner_text()
             cnpj = await account_spans[3].inner_text()
 
+            # "NOME - CNPJ - NUMERO DE CONTA"
             account_company = f'{name} - {cnpj} - {number}'
             is_account_company_included = account_company in self.companies_to_execute
             can_execute_company = True if len(
