@@ -66,5 +66,16 @@ def resource_path(relative_path: str) -> str:
     import sys
 
     if hasattr(sys, "_MEIPASS"):
+        # SE ESTIVER USANDO .EXE ELE EXECUTA ESSE BLOCO
         return os.path.join(sys._MEIPASS, relative_path)
+
+    check_playwright_install()
     return os.path.join(os.path.abspath("."), relative_path)
+
+
+def check_playwright_install() -> None:
+    import subprocess
+    import sys
+
+    subprocess.check_call([sys.executable, '-m',
+                          'playwright', 'install', 'chromium'])
