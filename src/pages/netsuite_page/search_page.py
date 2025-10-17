@@ -13,7 +13,7 @@ class SearchPage(BasePage):
     async def search_receipt(self, file: str) -> bool:
         await self.__goto_search_page()
 
-        file_splited = file.split('_')
+        file_splited = file.split('_ _')
         file_infos = {
             # TRANSFORMA A DATA EM DD/MM/YYYY
             'receipt_date': file_splited[0].replace('.', '/'),

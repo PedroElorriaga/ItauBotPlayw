@@ -60,11 +60,11 @@ class DownloadPage(BasePage):
 
                 download = await download_info.value
                 filename = (f'{payment_receipt["receipt_date"].replace("/", ".")}'
-                            f'_{payment_receipt["receipt_name_beneficiary"]}'
+                            f'_ _{payment_receipt["receipt_name_beneficiary"]}'
                             # receipt_cnpj_beneficiary É DIFERENTE DE self.__cnpj_company
-                            f'_{payment_receipt["receipt_cnpj_beneficiary"].replace("/", ".")}'
-                            f'_R$-{payment_receipt["receipt_value"]}'
-                            f'_{self.__cnpj_company.replace("/", ".")}.pdf')
+                            f'_ _{payment_receipt["receipt_cnpj_beneficiary"].replace("/", ".")}'
+                            f'_ _R$-{payment_receipt["receipt_value"]}'
+                            f'_ _{self.__cnpj_company.replace("/", ".")}.pdf')
 
                 await download.save_as(access_dir('docs/downloads', check_if_data_dont_have_special_character(filename)))
                 await self.iframe_page.content_frame.get_by_role("button", name="fechar").click()
