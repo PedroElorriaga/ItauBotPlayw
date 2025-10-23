@@ -29,9 +29,9 @@ jobs:
         run: |
           pipenv run playwright install --with-deps
 
-      # - name: ▶️ Executar Testes Pytest
-      #   env:
-      #     OPERATOR_ITAU: ${{ secrets.OPERATOR_ITAU }}
-      #     PASSWORD_ITAU: ${{ secrets.PASSWORD_ITAU }}
-      #   run: |
-      #     pipenv run tests
+      - name: ▶️ Executar Testes Pytest
+        env:
+          OPERATOR_ITAU: ${{ secrets.OPERATOR_ITAU }}
+          PASSWORD_ITAU: ${{ secrets.PASSWORD_ITAU }}
+        run: |
+          pipenv run tests
