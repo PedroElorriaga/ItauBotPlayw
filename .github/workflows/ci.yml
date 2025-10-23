@@ -19,13 +19,14 @@ jobs:
 
       - name: 📦 Instalar Dependências do Projeto
         run: |
-          pip install --upgrade pip
-          pip install pipenv
+          python -m ensurepip --upgrade
+          python -m pip install --upgrade pip
+          python -m pip install pipenv
           pipenv install --dev --deploy --system
       
       - name: 🌐 Instalar Browsers do Playwright
         run: |
-          playwright install --with-deps
+          pipenv run playwright install --with-deps
 
       - name: ▶️ Executar Testes Pytest
         env:
