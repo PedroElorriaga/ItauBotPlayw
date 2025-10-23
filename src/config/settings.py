@@ -6,9 +6,8 @@ import os
 class PlaywrightsConfigs:
     async def __aenter__(self):
         self.pw = await async_playwright().start()
-        chromium = self.pw.chromium
 
-        is_ci = os.environ.get('CI') == 'true'
+        chromium = self.pw.chromium
         viewport_size = {"width": 1920, "height": 1080}
 
         self.browser = await chromium.launch(

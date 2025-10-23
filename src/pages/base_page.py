@@ -8,5 +8,5 @@ class BasePage:
         self.base_url = base_url
 
     async def open_url(self):
-        await self.page.goto(self.base_url, wait_until='networkidle')
+        await self.page.goto(self.base_url)
         await self.page.bring_to_front()
