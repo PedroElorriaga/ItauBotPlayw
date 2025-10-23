@@ -12,10 +12,13 @@ tqdm = "==4.67.1"
 pyinstaller = "*"
 
 [dev-packages]
+pytest = "*"
+pytest-asyncio = "*"
 
 [scripts]
 bot = "python main.py"
 build = "pyinstaller main.spec"
+tests = "pytest src/tests/. -v"
 
 [requires]
 python_version = "3.11"
