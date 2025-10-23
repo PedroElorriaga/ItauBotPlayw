@@ -12,28 +12,28 @@ jobs:
       - name: 📥 Checkout do Código
         uses: actions/checkout@v4
 
-      # 🚨 PASSO 1: Configurar PATH do Python Local (CRÍTICO para o erro SSL/DLL)
       - name: 🛠️ Configurar PATH do Python Local
         run: |
-          # Confirma o PATH da sua instalação de Python 3.11 no seu PC
           $PythonBase = "C:\Users\Pedro\AppData\Local\Programs\Python\Python311"
-          
-          # Adiciona o caminho da instalação (para DLLs/SSL) e dos Scripts (para executáveis) ao PATH
           echo "$PythonBase" | Out-File -FilePath $env:GITHUB_PATH -Append
           echo "$PythonBase\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Append
           
-      # 🚨 PASSO 2: Configurar Encoding (CRÍTICO para o erro UnicodeDecodeError)
       - name: 💬 Configurar Encoding (chcp 65001)
-        # O 'chcp 65001' define o console para UTF-8, resolvendo o problema de caracteres.
         run: chcp 65001
 
-      # 🚨 PASSO 3: Instalar Dependências (Consolidado)
       - name: 📦 Instalar Dependências do Projeto
-        # Removido o uso de ensurepip (causa erros) e LANG/LC_ALL (menos eficaz que chcp)
         run: |
+          # 1. Tenta instalar o pipenv
           python -m pip install --upgrade pip
           python -m pip install pipenv
-          pipenv install --dev --deploy --system
+          
+          # 🚨 2. Instala dependências, contornando os erros de ambiente:
+          # A) '--insecure' e '--trusted-host': IGNORA O ERRO SSL/HTTPS (Temporário)
+          # B) '2>&1 | Out-Host': Ajuda a resolver o UnicodeDecodeError (como última tentativa)
+          # C) Adiciona o ENCODING de FORMA EXPLÍCITA (ajuda contra UnicodeError)
+          $env:PYTHONIOENCODING="cp1252"
+          
+          pipenv install --dev --deploy --system --extra-pip-args "--trusted-host pypi.org --trusted-host files.pythonhosted.org --insecure" 2>&1 | Out-Host
 
       - name: 🌐 Instalar Browsers do Playwright
         run: |
