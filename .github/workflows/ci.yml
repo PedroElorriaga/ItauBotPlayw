@@ -1,4 +1,4 @@
-rname: Testes ItauBot CI
+name: Testes ItauBot CI
 
 on:
   push:
