@@ -1,5 +1,6 @@
 from playwright.async_api import async_playwright
 from src.utils.common_utils import read_json_file
+import os
 
 
 class PlaywrightsConfigs:
@@ -7,7 +8,7 @@ class PlaywrightsConfigs:
         self.pw = await async_playwright().start()
         chromium = self.pw.chromium
         self.browser = await chromium.launch(
-            headless=False,
+            headless=os.environ.get('CI') == 'true',
             args=['--start-maximized']
         )
         self.context = await self.browser.new_context(no_viewport=True)
