@@ -7,6 +7,10 @@ on:
 jobs:
   test_itaubot:
     runs-on: ubuntu-latest
+
+    env:
+      PLAYWRIGHT_HEADLESS: 1
+      PLAYWRIGHT_BROWSERS_TIMEOUT: 60000
     
     steps:
       - name: 📥 Checkout do Código
