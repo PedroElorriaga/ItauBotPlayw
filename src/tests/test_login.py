@@ -2,6 +2,7 @@ from src.config.settings import PlaywrightsConfigs
 from src.pages.itau_page.login_page import LoginPageItau
 import os
 import pytest
+from pathlib import Path
 
 
 @pytest.mark.asyncio
@@ -17,18 +18,22 @@ async def test_login_itau():
         page = await context.new_page()
         login_itau = LoginPageItau(
             page, operator, password, 'https://www.itau.com.br/itaubba-pt')
+        base_path = Path(os.environ.get('GITHUB_WORKSPACE', '.'))
+
         try:
             await login_itau.goto_login()
-        except TimeoutError as e:
-            # 🚨 Ação para falha: Tira uma screenshot e salva no diretório de trabalho do CI
-            screenshot_path = "failure_screenshot.png"
-            await page.screenshot(path=screenshot_path)
 
-            # (Opcional) Printa o HTML da página para debug
+        except TimeoutError as e:
+            # 🚨 Usa o caminho absoluto garantido
+            screenshot_path = base_path / "failure_screenshot.png"
+            html_path = base_path / "failure_page.html"
+
+            await page.screenshot(path=str(screenshot_path))
+
             html_content = await page.content()
-            with open("failure_page.html", "w", encoding="utf-8") as f:
+            with open(html_path, "w", encoding="utf-8") as f:
                 f.write(html_content)
 
             print(
-                f"DEBUG: Screenshot e HTML salvos em {screenshot_path} e failure_page.html")
-            raise e  # Levanta o erro original para o teste falhar
+                f"DEBUG: Screenshot e HTML salvos em {screenshot_path} e {html_path}")
+            raise e
