@@ -37,3 +37,13 @@ jobs:
           PASSWORD_ITAU: ${{ secrets.PASSWORD_ITAU }}
         run: |
           pipenv run tests
+
+      - name: 💾 Upload Artefatos em Caso de Falha
+        if: always() # Roda sempre, mesmo que o passo anterior falhe
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-debug-files
+          path: |
+            failure_screenshot.png
+            failure_page.html
+          retention-days: 5
