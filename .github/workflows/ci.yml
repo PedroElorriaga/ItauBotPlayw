@@ -6,7 +6,7 @@ on:
 
 jobs:
   test_itaubot:
-    runs-on: windows-latest
+    runs-on: windows-itaubot
  
     steps:
       - name: 📥 Checkout do Código
