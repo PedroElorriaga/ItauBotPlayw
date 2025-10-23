@@ -12,8 +12,9 @@ class LoginPageItau(BasePage):
         await self.open_url()
         try:
             # VERIFICA SE EXISTE O BANNER DE ACEITAR OS COOKIES
-            await self.page.locator("#itau-cookie-consent-banner-accept-cookies-btn").click(timeout=5000)
+            await self.page.get_by_role("button", name="Aceitar todos").click(timeout=5000)
         except:
+            print('N encontrado')
             pass
         await self.page.get_by_role("button", name="Mais acessos").click()
 
