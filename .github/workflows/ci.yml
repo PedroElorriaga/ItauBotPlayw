@@ -6,12 +6,8 @@ on:
 
 jobs:
   test_itaubot:
-    runs-on: ubuntu-latest
-
-    env:
-      PLAYWRIGHT_HEADLESS: 1
-      PLAYWRIGHT_BROWSERS_TIMEOUT: 60000
-    
+    runs-on: windows-itaubot
+ 
     steps:
       - name: 📥 Checkout do Código
         uses: actions/checkout@v4
@@ -23,13 +19,14 @@ jobs:
 
       - name: 📦 Instalar Dependências do Projeto
         run: |
+          python -m ensurepip --upgrade
           python -m pip install --upgrade pip
-          pip install pipenv
+          python -m pip install pipenv
           pipenv install --dev --deploy --system
       
       - name: 🌐 Instalar Browsers do Playwright
         run: |
-          playwright install --with-deps
+          pipenv run playwright install --with-deps
 
       - name: ▶️ Executar Testes Pytest
         env:
