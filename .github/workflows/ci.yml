@@ -14,9 +14,9 @@ jobs:
 
       - name: 🛠️ Configurar PATH do Python Local
         run: |
-          $PythonBase = "C:\Users\Pedro\AppData\Local\Programs\Python\Python311"     
-          echo "::add-path::$PythonBase"
-          echo "::add-path::$PythonBase\Scripts"
+          $PythonBase = "C:\Users\Pedro\AppData\Local\Programs\Python\Python311"
+          echo $PythonBase | Out-File -FilePath $env:GITHUB_PATH -Append
+          echo "$PythonBase\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Append
           Write-Host "PATHs adicionados ao ambiente."
 
       - name: 📦 Instalar Dependências do Projeto
