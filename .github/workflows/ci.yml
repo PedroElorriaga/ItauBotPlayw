@@ -27,7 +27,7 @@ jobs:
       
       - name: 🌐 Instalar Browsers do Playwright
         run: |
-          run playwright install --with-deps
+          playwright install --with-deps
 
       - name: ▶️ Executar Testes Pytest
         env:
