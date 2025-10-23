@@ -23,18 +23,13 @@ jobs:
 
       - name: 📦 Instalar Dependências do Projeto
         run: |
-          # 1. Tenta instalar o pipenv
           python -m pip install --upgrade pip
           python -m pip install pipenv
+          $env:PIP_TRUSTED_HOSTS="pypi.org files.pythonhosted.org"
+          $env:PIP_INDEX_URL="http://pypi.org/simple/"
           
-          # 🚨 2. Instala dependências, contornando os erros de ambiente:
-          # A) '--insecure' e '--trusted-host': IGNORA O ERRO SSL/HTTPS (Temporário)
-          # B) '2>&1 | Out-Host': Ajuda a resolver o UnicodeDecodeError (como última tentativa)
-          # C) Adiciona o ENCODING de FORMA EXPLÍCITA (ajuda contra UnicodeError)
-          $env:PYTHONIOENCODING="cp1252"
+          pipenv install --dev --deploy --system --verbose 2>&1 | Out-Host
           
-          pipenv install --dev --deploy --system --extra-pip-args "--trusted-host pypi.org --trusted-host files.pythonhosted.org --insecure" 2>&1 | Out-Host
-
       - name: 🌐 Instalar Browsers do Playwright
         run: |
           pipenv run playwright install --with-deps
