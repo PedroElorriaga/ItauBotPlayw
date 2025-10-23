@@ -1,0 +1,35 @@
+name: Testes ItauBot CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test_itaubot:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configurar Python (3.11)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Instalar Dependências do Projeto
+        run: |
+          python -m pip install --upgrade pip
+          pip install pipenv
+          pipenv install --dev --deploy --system
+      
+      - name: 🌐 Instalar Browsers do Playwright
+        run: |
+          playwright install --with-deps
+
+      - name: ▶️ Executar Testes Pytest
+        env:
+          OPERATOR_ITAU: ${{ secrets.OPERATOR_ITAU }}
+          PASSWORD_ITAU: ${{ secrets.PASSWORD_ITAU }}
+        run: |
+          pipenv run tests

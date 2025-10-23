@@ -8,7 +8,7 @@ Este repositório contém um robô desenvolvido em **Python**, que pode ser exec
 
 Antes de iniciar, certifique-se de ter instalado em sua máquina:
 
-- [Python 3.10+](https://www.python.org/downloads/)  
+- [Python 3.11+](https://www.python.org/downloads/)  
 - [pipenv](https://pipenv.pypa.io/en/latest/)
 
 ---
