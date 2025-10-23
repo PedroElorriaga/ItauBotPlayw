@@ -18,7 +18,7 @@ pytest-asyncio = "*"
 [scripts]
 bot = "python main.py"
 build = "pyinstaller main.spec"
-tests = "pytest src/tests/. -v -s"
+tests = "pytest src/tests/. -v"
 
 [requires]
 python_version = "3.11"
